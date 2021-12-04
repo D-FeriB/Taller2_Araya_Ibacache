@@ -22,6 +22,8 @@ class Estudiante {
         correo=c;
         nivel=n;
         contraseña=con;
+        inscritas = new ListaAsignaturas(100);
+        resultados = new ListaResultados(100);
     }
 
     public String getRut() {
@@ -72,6 +74,20 @@ class Estudiante {
         this.resultados = resultados;
     }
     
+    public int getCreditosUtilizados(){
+        int suma = 0;
+        for (int i = 0; i < inscritas.getCant(); i++) {
+            suma += inscritas.getAsignaturaI(i).getCreditos();
+        }
+        return suma;
+    }
     
+    public int getCreditosTotales(){
+        int suma = 0;
+        for (int i = 0; i < resultados.getCant(); i++) {
+            suma += resultados.getResultadoI(i).getAsignatura().getCreditos();
+        }
+        return suma;
+    }
     
 }

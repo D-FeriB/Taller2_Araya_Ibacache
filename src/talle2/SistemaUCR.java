@@ -16,7 +16,7 @@ public interface SistemaUCR {
     public void agregarAsignaturaOpcional(int codigo, String nombre, int creditos, int creditos_prerequisitos);
     public void agregarProfesor(String rut, String correo,String contraseña, int salario);
     public void asociarParaleloAsignaturaProfesor(int numero, int codigoAsignatura, String rutProfesor);
-    public void logIn(String rut,String contraseña);
+    public boolean logIn(String rut,String contraseña);
     public void InscribirAsignatura(String rut,int codigo);
     public String obtenerAsignaturasDisponibles(String rut);
     public String obtenerAsignaturasInscritas(String rut);

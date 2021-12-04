@@ -19,6 +19,7 @@ public class Asignatura {
         codigo=c;
         nombre=n;
         creditos=cr;
+        paralelos = new ListaParalelos(100);
     }
 
     public int getCodigo() {

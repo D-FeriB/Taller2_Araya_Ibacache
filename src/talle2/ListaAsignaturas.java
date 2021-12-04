@@ -17,7 +17,7 @@ class ListaAsignaturas {
     public ListaAsignaturas(int max){
         this.max = max;
         count = 0;
-        list = new Estudiante[max];
+        list = new Asignatura[max];
     }
     public int getCant(){ return count;}
     public boolean agregarAsignatura(Asignatura j){
@@ -54,7 +54,7 @@ class ListaAsignaturas {
    
     public boolean eliminarAsignatura(int text){
         int i = 0;
-        while(i < count && !list[i].getCodigo()==text) {
+        while(i < count && list[i].getCodigo()!=text) {
             i++;
         }
         

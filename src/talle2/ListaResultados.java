@@ -9,18 +9,18 @@ package talle2;
  *
  * @author ibaca
  */
-class ListaParalelos {
+class ListaResultados {
     private int count;
     private int max;
-    private Paralelo[] list;
+    private Resultado[] list;
     
-    public ListaParalelos(int max){
+    public ListaResultados(int max){
         this.max = max;
         count = 0;
-        list = new Paralelo[max];
+        list = new Resultado[max];
     }
     public int getCant(){ return count;}
-    public boolean agregarParalelo(Paralelo j){
+    public boolean agregarResultado(Resultado j){
         if (count<max){
             list[count] = j;
             count++;
@@ -29,16 +29,16 @@ class ListaParalelos {
         return false;
     }
     
-    public Paralelo buscarParalelo(int numero){
+    public Resultado buscarResultado(String rut, int codigoAsignatura){
         for (int i = 0; i < count; i++) {
-            if (list[i].getNumero()==numero){
+            if (list[i].getEstudiante().getRut().equals(rut) && list[i].getAsignatura().getCodigo()==codigoAsignatura){
                 return list[i];
             }
         }
         return null;
     }
     
-    public Paralelo getParaleloI(int i){
+    public Resultado getResultadoI(int i){
         if (i<count) return list[i];
         return null;
     }

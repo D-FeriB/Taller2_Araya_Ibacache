@@ -9,18 +9,18 @@ package talle2;
  *
  * @author ibaca
  */
-class ListaParalelos {
+class ListaProfesores {
     private int count;
     private int max;
-    private Paralelo[] list;
+    private Profesor[] list;
     
-    public ListaParalelos(int max){
+    public ListaProfesores(int max){
         this.max = max;
         count = 0;
-        list = new Paralelo[max];
+        list = new Profesor[max];
     }
     public int getCant(){ return count;}
-    public boolean agregarParalelo(Paralelo j){
+    public boolean agregarProfesor(Profesor j){
         if (count<max){
             list[count] = j;
             count++;
@@ -29,16 +29,16 @@ class ListaParalelos {
         return false;
     }
     
-    public Paralelo buscarParalelo(int numero){
+    public Profesor buscarProfesor(String rut){
         for (int i = 0; i < count; i++) {
-            if (list[i].getNumero()==numero){
+            if (list[i].getRut().equals(rut) ){
                 return list[i];
             }
         }
         return null;
     }
     
-    public Paralelo getParaleloI(int i){
+    public Profesor getProfesorI(int i){
         if (i<count) return list[i];
         return null;
     }
