@@ -7,7 +7,7 @@ package talle2;
 
 /**
  *
- * @author jhona
+ * @author ibaca
  */
 public class Talle2 {
 

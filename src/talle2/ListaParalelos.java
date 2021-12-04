@@ -14,13 +14,13 @@ class ListaParalelos {
     private int max;
     private Estudiante[] list;
     
-    public ListaEstudiantes(int max){
+    public ListaParalelos(int max){
         this.max = max;
         count = 0;
         list = new Estudiante[max];
     }
     public int getCant(){ return count;}
-    public boolean agregarEstudiante(Estudiante j){
+    public boolean agregarParalelo(Paralelo j){
         if (count<max){
             list[count] = j;
             count++;
@@ -29,16 +29,16 @@ class ListaParalelos {
         return false;
     }
     
-    public Estudiante buscarEstudiante(String nombreUsuario){
+    public Paralelo buscarParalelo(int numero){
         for (int i = 0; i < count; i++) {
-            if (list[i].getRut().equals(nombreUsuario)){
+            if (list[i].getNumero()==numero){
                 return list[i];
             }
         }
         return null;
     }
     
-    public Estudiante getEstudianteI(int i){
+    public Paralelo getParaleloI(int i){
         if (i<count) return list[i];
         return null;
     }

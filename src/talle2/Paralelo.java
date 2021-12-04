@@ -7,8 +7,8 @@ package talle2;
 
 /**
  *
- * @author jhona
+ * @author ibaca
  */
 class Paralelo {
-    
+    private int 
 }
