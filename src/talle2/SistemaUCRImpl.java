@@ -72,18 +72,29 @@ public class SistemaUCRImpl implements SistemaUCR{
     }
 
     @Override
-    public boolean logIn(String rut, String contraseña) {
+    public String logIn(String rut, String contraseña) {
         Estudiante e = estudiantes.buscarEstudiante(rut);
         if (e!=null){
             if (e.getContraseña().equals(contraseña)){
-                return true;
+                return rut+","+"estudiante";
             }
             else{
-                return false;
+                throw new NullPointerException("La contraseña del estudiante es incorrecta");
             }
         }
         else{
-            throw new NullPointerException("El estudiant enoe xistE");
+            Profesor p = profesores.buscarProfesor(rut);
+            if (p!=null){
+                if (p.getContra().equals(contraseña)){
+                    return rut+","+"profesor";
+                }
+                else{
+                    throw new NullPointerException("La contraseña del estudiante es incorrecta");
+                }
+            }
+            else{
+                throw new NullPointerException("El rut no está asociado a nadie.");
+            }
         }
     }
 
@@ -132,37 +143,178 @@ public class SistemaUCRImpl implements SistemaUCR{
 
     @Override
     public String obtenerAsignaturasDisponibles(String rut) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Estudiante e = estudiantes.buscarEstudiante(rut);
+        if (e!=null){
+            String text = "";
+            for (int i = 0; i < asignaturas.getCant(); i++) {
+                if (asignaturas.getAsignaturaI(i) instanceof AsignaturaObligatoria){
+                    AsignaturaObligatoria ob = (AsignaturaObligatoria) asignaturas.getAsignaturaI(i);
+                    if (ob.getNivel() == e.getNivel()){
+                        boolean exito = true;
+                        for (int j = 0; j < ob.getParalelos().getCant(); j++) {
+                            Paralelo par = ob.getParalelos().getParaleloI(j);
+                            if (par.getEstudiantes().getCant()>=100){
+                                exito = false;
+                            }
+                        }
+                        if (exito){
+                            text+= "\t"+ob.getNombre()+": "+ob.getCodigo()+"\n";
+                        }
+                    }
+                }
+            }
+            if (text.equals("")){
+                return "No existen paralelos por tomar.";
+            }
+            return text;
+        }
+        else{
+            throw new NullPointerException("El estudiante no existe");
+        }
     }
 
     @Override
     public String obtenerAsignaturasInscritas(String rut) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Estudiante e = estudiantes.buscarEstudiante(rut);
+        if (e!=null){
+            String text = "";
+            for (int i = 0; i < e.getInscritas().getCant(); i++) {
+                text+= e.getInscritas().getAsignaturaI(i).getNombre()+": "+e.getInscritas().getAsignaturaI(i).getCodigo()+"\n";
+            }
+            return text;
+        }
+        else{
+            throw new NullPointerException("El estudiante no existe");
+        }
     }
 
     @Override
     public boolean eliminarAsignaturaInscrita(String rut, int codigo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Estudiante e = estudiantes.buscarEstudiante(rut);
+        if (e!=null){
+            return e.getInscritas().eliminarAsignatura(codigo);
+        }
+        else{
+            throw new NullPointerException("El estudiante no existe");
+        }
     }
 
     @Override
     public String obtenerParalelosProfesor(String rut) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Profesor p = profesores.buscarProfesor(rut);
+        if (p!=null){
+            String text = "";
+            for (int i = 0; i < p.getParalelos().getCant(); i++) {
+                text+= p.getParalelos().getParaleloI(i).getAsignatura().getNombre()+": N°"+p.getParalelos().getParaleloI(i).getNumero()+"\n";
+            }
+            return text;
+        }
+        else{
+            throw new NullPointerException("El profesor no existe");
+        }
     }
 
     @Override
     public String obtenerEstudiantesParalelo(int numero, int codigoAsignatura) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Asignatura a = asignaturas.buscarAsignatura(codigoAsignatura);
+        if (a!=null){
+            Paralelo p = a.getParalelos().buscarParalelo(numero);
+            if (p!=null){
+                String text = "";
+                for (int i = 0; i < p.getEstudiantes().getCant(); i++) {
+                    text+=p.getEstudiantes().getEstudianteI(i).getRut()+" "+p.getEstudiantes().getEstudianteI(i).getCorreo()+"\n";
+                }
+                return text;
+            }
+            else{
+                throw new NullPointerException("El paralelo no existe");
+            }
+        }
+        else{
+            throw new NullPointerException("La asignatura no existe");
+        }
     }
 
     @Override
     public void ingresarNota(int codigoAsignatura, String rut, double nota) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Asignatura a = asignaturas.buscarAsignatura(codigoAsignatura);
+        if (a != null){
+            Estudiante e = estudiantes.buscarEstudiante(rut);
+            if (e!=null){
+                Resultado r = new Resultado(nota);
+                r.setAsignatura(a);
+                r.setEstudiante(e);
+                e.getResultados().agregarResultado(r);
+            }
+            else{
+                throw new NullPointerException("El estudiante no existe");
+            }
+        }
+        else{
+            throw new NullPointerException("La asignatura no existe");
+        }
     }
 
     @Override
-    public void obtenerEgresados() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String obtenerEgresados() {
+        String text = "";
+        int total = 0;
+        for (int x = 0; x < asignaturas.getCant(); x++) {
+            if (asignaturas.getAsignaturaI(x) instanceof AsignaturaObligatoria){
+                total++;
+            }
+        }
+        for (int i = 0; i < estudiantes.getCant(); i++) {
+            int count = 0;
+            Estudiante e = estudiantes.getEstudianteI(i);
+            for (int j = 0; j < e.getResultados().getCant(); j++) {
+                Resultado r = e.getResultados().getResultadoI(j);
+                if (r.getNota()>=3.95){
+                    count++;
+                }
+            }
+            if (count==total){
+                text+=e.getRut()+"\n";
+            }
+        }
+        return text;
+    }
+
+    @Override
+    public String mostrarParalelos(int codigo) {
+        Asignatura a = asignaturas.buscarAsignatura(codigo);
+        String text = "";
+        if (a!=null){
+            for (int i = 0; i < a.getParalelos().getCant(); i++) {
+                Paralelo p = a.getParalelos().getParaleloI(i);
+                int cupo = 40-p.getEstudiantes().getCant();
+                text+="Paralelo "+p.getNumero()+", cupo "+cupo+" restantes\n";
+            }
+            return text;
+        }
+        else{
+            throw new NullPointerException("La asignatura no existe");
+        }
+    }
+
+    @Override
+    public void inscribirParalelo(String rut, int codigo, int paralelo) {
+        Estudiante e = estudiantes.buscarEstudiante(rut);
+        Asignatura a = asignaturas.buscarAsignatura(codigo);
+        if (a!=null && e!=null){
+            Paralelo p = a.getParalelos().buscarParalelo(paralelo);
+            if (p!=null){
+                if (!p.getEstudiantes().agregarEstudiante(e)){
+                    throw new NullPointerException("Paralelo lleno!");
+                }
+            }
+            else{
+                throw new NullPointerException("Paralelo no existe");
+            }
+        }
+        else{
+            throw new NullPointerException("Asignatura o estudiante no existe");
+        }
     }
     
 }

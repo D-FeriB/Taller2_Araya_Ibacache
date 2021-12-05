@@ -19,7 +19,7 @@ class Paralelo {
         this.numero = numero;
         asignatura = null;
         profe = null;
-        estudiantes = new ListaEstudiantes(100);
+        estudiantes = new ListaEstudiantes(40);
     }
 
     public int getNumero() {
